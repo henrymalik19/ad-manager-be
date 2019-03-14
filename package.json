@@ -1,0 +1,23 @@
+{
+  "name": "ad-web-app-be",
+  "version": "1.0.0",
+  "description": "Web App to Manage Active Directory",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Malik Henry",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "ldapjs": "^1.0.2",
+    "ldapjs-client": "^0.1.1",
+    "morgan": "^1.9.1",
+    "node-powershell": "^4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
