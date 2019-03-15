@@ -45,6 +45,8 @@ function find(queryType, attributes) {
 }
 
 function findUser(samName) {
+    console.log(samName);
+    
     return new Promise(function(resolve, reject) {
 
         let client = ldap.createClient({
@@ -86,4 +88,88 @@ function findUser(samName) {
     }); 
 }
 
-  module.exports = { find, findUser };
+function findGroup(samName) {
+    console.log(samName);
+    
+    return new Promise(function(resolve, reject) {
+
+        let client = ldap.createClient({
+            url: 'ldap://192.168.254.111'
+        });
+
+        client.bind('CN=Malik Henry,OU=Information Technology,OU=US,DC=BRITAX,DC=local', 'Computer1', function(err) {
+            if(err) console.log(err);
+            
+            let opts = {
+                filter: `(&(sAMAccountName=${samName})(objectCategory=CN=Group,CN=Schema,CN=Configuration,DC=BRITAX,DC=local))`,
+                scope: 'sub',
+        
+            };
+        
+            client.search('dc=britax,dc=local', opts, function(err, resp) {
+    
+                let data = [];
+    
+                resp.on('searchEntry', function(entry) {
+                    data.push(entry.object);
+                });
+                resp.on('searchReference', function(referral) {
+                    console.log('referral: ' + referral.uris.join());
+                });
+                resp.on('error', function(err) {
+                    client.unbind();
+                    reject(err);
+                });
+                resp.on('end', function(result) {
+                    console.log('status: ' + result.status);
+                    client.unbind();
+                    resolve(data);
+                });
+            });
+        });
+    }); 
+}
+
+function findComputer(name) {
+    console.log(name);
+    
+    return new Promise(function(resolve, reject) {
+
+        let client = ldap.createClient({
+            url: 'ldap://192.168.254.111'
+        });
+
+        client.bind('CN=Malik Henry,OU=Information Technology,OU=US,DC=BRITAX,DC=local', 'Computer1', function(err) {
+            if(err) console.log(err);
+            
+            let opts = {
+                filter: `(&(name=${name})(objectCategory=CN=Computer,CN=Schema,CN=Configuration,DC=BRITAX,DC=local))`,
+                scope: 'sub',
+        
+            };
+        
+            client.search('dc=britax,dc=local', opts, function(err, resp) {
+    
+                let data = [];
+    
+                resp.on('searchEntry', function(entry) {
+                    data.push(entry.object);
+                });
+                resp.on('searchReference', function(referral) {
+                    console.log('referral: ' + referral.uris.join());
+                });
+                resp.on('error', function(err) {
+                    client.unbind();
+                    reject(err);
+                });
+                resp.on('end', function(result) {
+                    console.log('status: ' + result.status);
+                    client.unbind();
+                    resolve(data);
+                });
+            });
+        });
+    }); 
+}
+
+  module.exports = { find, findUser, findGroup, findComputer };
